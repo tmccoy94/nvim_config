@@ -12,7 +12,7 @@ return {
             require("mason-lspconfig").setup({
                 ensure_installed = {
                     "lua_ls",
-                    "pylsp",
+                    "pyright",
                     "clangd",
                     "ts_ls",
                     "powershell_es",
@@ -25,6 +25,33 @@ return {
         "neovim/nvim-lspconfig",
         config = function()
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            capabilities.textDocument.completion.completionItem.kind = {
+                -- Explicitly allow only the completion item kinds you want
+                "Method",
+                "Function",
+                "Constructor",
+                "Field",
+                "Variable",
+                "Class",
+                "Interface",
+                "Module",
+                "Property",
+                "Unit",
+                "Value",
+                "Enum",
+                "Keyword",
+                "Snippet",
+                "Color",
+                "File",
+                "Reference",
+                "Folder",
+                "EnumMember",
+                "Constant",
+                "Struct",
+                "Event",
+                "Operator",
+                "TypeParameter",
+            }
 
             local lspconfig = require("lspconfig")
             lspconfig.lua_ls.setup({
@@ -49,8 +76,18 @@ return {
                     },
                 },
             })
-            lspconfig.pylsp.setup({
+            lspconfig.pyright.setup({
                 capabilities = capabilities,
+                settings = {
+                    python = {
+                        analysis = {
+                            typeCheckingMode = "basic", -- Change to "strict" for stricter checks
+                            autoImportCompletions = true,
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                        },
+                    },
+                },
             })
             lspconfig.sqlls.setup({
                 capabilities = capabilities,
